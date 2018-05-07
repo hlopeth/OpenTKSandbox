@@ -14,6 +14,7 @@ namespace OpenTKSandbox
         {
             _window = window;
             _window.Load += WindowOnLoad;
+            _window.Unload += WindowOnUnload;
             _window.Resize +=WindowOnResize;
             _window.UpdateFrame += WindowOnUpdateFrame;
             _window.RenderFrame += WindowOnRenderFrame;
@@ -23,6 +24,12 @@ namespace OpenTKSandbox
         private void WindowOnLoad(object sender, EventArgs e)
         {
             //GL.Enable(EnableCap.DepthTest);
+            var shP = new ShaderProgram("object.vs", "object.fs");
+        }
+
+        private void WindowOnUnload(object sender, EventArgs e)
+        {
+            // Free resources.
         }
 
         private void WindowOnResize(object sender, EventArgs e)
@@ -32,7 +39,7 @@ namespace OpenTKSandbox
 
         private void WindowOnUpdateFrame(object sender, FrameEventArgs e)
         {
-            
+            // Logic updates.
         }
 
         private void WindowOnRenderFrame(object sender, FrameEventArgs e)
