@@ -5,16 +5,9 @@ using OpenTK.Graphics.OpenGL;
 
 namespace OpenTKSandbox
 {
-    public class ShaderProgram
+    public class ShaderProgram : IDisposable
     {
         public int Id { get; }
-
-        private enum Type
-        {
-            Vertex,
-            Fragment,
-            Program
-        }
 
         public ShaderProgram(string vertexFileName, string fragmentFileName)
         {
@@ -63,13 +56,7 @@ namespace OpenTKSandbox
             GL.DeleteShader(fragmentId);
         }
 
-        ~ShaderProgram()
-        {
-            //if (Id != 0) GL.DeleteProgram(Id);
-        }            
-
         public void Use() => GL.UseProgram(Id);
-
         public void SetUniform(string name, int value) => GL.Uniform1(GL.GetUniformLocation(Id, name), value);
         public void SetUniform(string name, float value) => GL.Uniform1(GL.GetUniformLocation(Id, name), value);
         public void SetUniform(string name, Vector2 value) => GL.Uniform2(GL.GetUniformLocation(Id, name), value);
@@ -78,7 +65,14 @@ namespace OpenTKSandbox
         public void SetUniform(string name, Matrix2 value) => GL.UniformMatrix2(GL.GetUniformLocation(Id, name), false, ref value);
         public void SetUniform(string name, Matrix3 value) => GL.UniformMatrix3(GL.GetUniformLocation(Id, name), false, ref value);
         public void SetUniform(string name, Matrix4 value) => GL.UniformMatrix4(GL.GetUniformLocation(Id, name), false, ref value);
-        
+
+        private enum Type
+        {
+            Vertex,
+            Fragment,
+            Program
+        }
+
         private static bool IsCompilationSuccess(int id, Type type)
         {
             int success;
@@ -103,7 +97,21 @@ namespace OpenTKSandbox
                     Console.WriteLine($"{type} is unknown.");
                     return false;
             }
-        }        
+        }
+
+        private void ReleaseUnmanagedResources()
+        {
+            if (Id != 0)
+                GL.DeleteProgram(Id);
+        }
+
+        public void Dispose()
+        {
+            ReleaseUnmanagedResources();
+            GC.SuppressFinalize(this);
+        }
+
+        ~ShaderProgram() => ReleaseUnmanagedResources();        
     }
 
 //    [Serializable]

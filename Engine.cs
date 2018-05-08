@@ -21,15 +21,21 @@ namespace OpenTKSandbox
             _window.KeyDown += WindowOnKeyDown;
         }
 
+        private ShaderProgram _shaderProgram;
+        private SceneObject _cube;
+        
         private void WindowOnLoad(object sender, EventArgs e)
         {
             //GL.Enable(EnableCap.DepthTest);
-            var shP = new ShaderProgram("object.vs", "object.fs");
+            _shaderProgram = new ShaderProgram("object.vs", "object.fs");
+            _cube = new SceneObject(_shaderProgram.Id, new [] {1f, 2f, 3f}, 3);
         }
 
         private void WindowOnUnload(object sender, EventArgs e)
         {
             // Free resources.
+            _shaderProgram.Dispose();
+            _cube.Dispose();
         }
 
         private void WindowOnResize(object sender, EventArgs e)
