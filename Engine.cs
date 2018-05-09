@@ -9,6 +9,7 @@ namespace OpenTKSandbox
     public class Engine
     {
         private readonly GameWindow _window;
+        public bool windowSouldClose;
 
         public Engine(GameWindow window)
         {
@@ -52,11 +53,14 @@ namespace OpenTKSandbox
 
         private void WindowOnUpdateFrame(object sender, FrameEventArgs e)
         {
+            if (windowSouldClose)
+                _window.Close();
             // Logic updates.
         }
 
         private void WindowOnRenderFrame(object sender, FrameEventArgs e)
         {
+            _window.Title = $"Sandbox FPS: {1f / e.Time:0}";
             GL.ClearColor(Color.Gray);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             
@@ -68,7 +72,7 @@ namespace OpenTKSandbox
             switch (e.Key)
             {
                 case Key.Escape:
-                    _window.Close();
+                    windowSouldClose = true;
                     break;
                 default:
                     Console.WriteLine($"no {e.Key} key handler");

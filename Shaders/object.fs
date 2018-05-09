@@ -3,7 +3,6 @@
 in vec3 v_color;
 
 layout(location = 0) out vec4 o_color;
-sdfdsf
 
 void main()
 {
