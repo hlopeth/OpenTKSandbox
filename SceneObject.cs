@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace OpenTKSandbox
 {
-    public class SceneObject : IDisposable
+    public class Model : IDisposable
     {
         public int Vao { get; private set; }
         public int Vbo { get; private set; }
@@ -14,7 +14,7 @@ namespace OpenTKSandbox
         public int ShaderProgramId { get; }
         public List<int> TextureIds { get; private set; }
 
-        public SceneObject(int shaderProgramId, float[] vertices, params int[] structure)
+        public Model(int shaderProgramId, float[] vertices, params int[] structure)
         {
             ShaderProgramId = shaderProgramId;
             
@@ -27,7 +27,7 @@ namespace OpenTKSandbox
             GL.BindVertexArray(0);
         }
 
-        public SceneObject(int shaderProgramId, float[] vertices, float[] indices, params int[] structure)
+        public Model(int shaderProgramId, float[] vertices, float[] indices, params int[] structure)
         {
             ShaderProgramId = shaderProgramId;
 
@@ -117,6 +117,6 @@ namespace OpenTKSandbox
             GC.SuppressFinalize(this);
         }
 
-        ~SceneObject() => ReleaseUnmanagedResources();
+        ~Model() => ReleaseUnmanagedResources();
     }
 }

@@ -23,7 +23,7 @@ namespace OpenTKSandbox
         }
 
         private ShaderProgram _shaderProgram;
-        private SceneObject _cube;
+        private Model _cube;
         
         private void WindowOnLoad(object sender, EventArgs e)
         {
@@ -31,7 +31,7 @@ namespace OpenTKSandbox
             try
             {
                 _shaderProgram = new ShaderProgram("object.vs", "object.fs");
-                _cube = new SceneObject(_shaderProgram.Id, new[] { 1f, 2f, 3f }, 3);
+                _cube = new Model(_shaderProgram.Id, new[] { 1f, 2f, 3f }, 3);
             }
             catch (ShaderProgramException ex)
             {

@@ -15,9 +15,9 @@ namespace OpenTKSandbox
         }
 
         public void AddModel(IModel model) => models.Add(model);
-
         public void RemoveModel(IModel model) => models.Remove(model);
-
+        
+        
         public void Draw()
         {
             foreach (var model in models)
