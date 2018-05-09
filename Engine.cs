@@ -27,8 +27,15 @@ namespace OpenTKSandbox
         private void WindowOnLoad(object sender, EventArgs e)
         {
             //GL.Enable(EnableCap.DepthTest);
-            _shaderProgram = new ShaderProgram("object.vs", "object.fs");
-            _cube = new SceneObject(_shaderProgram.Id, new [] {1f, 2f, 3f}, 3);
+            try
+            {
+                _shaderProgram = new ShaderProgram("object.vs", "object.fs");
+                _cube = new SceneObject(_shaderProgram.Id, new[] { 1f, 2f, 3f }, 3);
+            }
+            catch (ShaderProgramException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void WindowOnUnload(object sender, EventArgs e)

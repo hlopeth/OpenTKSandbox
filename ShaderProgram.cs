@@ -5,50 +5,33 @@ using OpenTK.Graphics.OpenGL;
 
 namespace OpenTKSandbox
 {
+    public class ShaderProgramException : ApplicationException
+    {
+        public ShaderProgramException() { }
+        public ShaderProgramException(string message) : base(message) { }
+    }
+
     public class ShaderProgram : IDisposable
     {
         public int Id { get; }
 
         public ShaderProgram(string vertexFileName, string fragmentFileName)
         {
-            var vertexCode = "";
-            var fragmentCode = "";
+            var vertexCode = ReadCode(vertexFileName);
+            var fragmentCode = ReadCode(fragmentFileName);
 
-            try
-            {
-                using (var reader = new StreamReader(@"..\..\Shaders\" + vertexFileName))
-                {
-                    vertexCode = reader.ReadToEnd();
-                    reader.Close();
-                }
-
-                using (var reader = new StreamReader(@"..\..\Shaders\" + fragmentFileName))
-                {
-                    fragmentCode = reader.ReadToEnd();
-                    reader.Close();
-                }
-            }
-            catch (FileNotFoundException ex)
-            {
-                Console.WriteLine("Shader file not found: " + ex.FileName);
-                return;
-            }
-
-            var vertexId = GL.CreateShader(ShaderType.VertexShader);
-            GL.ShaderSource(vertexId, vertexCode);
-            GL.CompileShader(vertexId);
-            if (!IsCompilationSuccess(vertexId, Type.Vertex)) return;
-
-            var fragmentId = GL.CreateShader(ShaderType.FragmentShader);
-            GL.ShaderSource(fragmentId, fragmentCode);
-            GL.CompileShader(fragmentId);
-            if (!IsCompilationSuccess(vertexId, Type.Vertex)) return;
-
+            var vertexId = Compile(vertexCode, ShaderType.VertexShader);
+            var fragmentId = Compile(fragmentCode, ShaderType.FragmentShader);
+            
             Id = GL.CreateProgram();
             GL.AttachShader(Id, vertexId);
             GL.AttachShader(Id, fragmentId);
             GL.LinkProgram(Id);
-            if (!IsCompilationSuccess(Id, Type.Program)) return;
+            if (!CompilationSuccess(Id, Type.Program))
+            {
+                var infoLog = GL.GetProgramInfoLog(Id);
+                throw new ShaderProgramException($"Failed linking shaders {Type.Program}. Log: {Environment.NewLine + infoLog}");
+            }
             
             GL.DetachShader(Id, vertexId);
             GL.DetachShader(Id, fragmentId);
@@ -73,10 +56,42 @@ namespace OpenTKSandbox
             Program
         }
 
-        private static bool IsCompilationSuccess(int id, Type type)
+        private string ReadCode(string FileName)
+        {
+            string source="";
+            if (File.Exists(@"..\..\Shaders\" + FileName))
+            {
+                using (var reader = new StreamReader(@"..\..\Shaders\" + FileName))
+                {
+                    source = reader.ReadToEnd();
+                    reader.Close();
+                }
+            }
+            else
+            {
+                throw new ShaderProgramException("Shader file not found: " + @"Shaders\" + FileName);
+            }
+            return source;
+        }
+
+        private int Compile(string shaderCode, ShaderType shaderType)
+        {
+            var shaderId = GL.CreateShader(shaderType);
+            GL.ShaderSource(shaderId, shaderCode);
+            GL.CompileShader(shaderId);
+            var type = shaderType == ShaderType.VertexShader ? Type.Vertex : Type.Fragment;
+            if (CompilationSuccess(shaderId, type))
+                return shaderId;
+            else
+            {
+                var infoLog = GL.GetShaderInfoLog(shaderId);
+                throw new ShaderProgramException($"Failed compiling { type } shader.Log: { Environment.NewLine + infoLog}");
+            }
+        }
+
+        private static bool CompilationSuccess(int id, Type type)
         {
             int success;
-            string infoLog;
 
             switch (type)
             {
@@ -84,17 +99,13 @@ namespace OpenTKSandbox
                 case Type.Fragment:
                     GL.GetShader(id, ShaderParameter.CompileStatus, out success);
                     if (success != 0) return true;
-                    infoLog = GL.GetShaderInfoLog(id);
-                    Console.WriteLine($"Failed compiling {type} shader. Log: {Environment.NewLine + infoLog}");
                     return false;
                 case Type.Program:
                     GL.GetProgram(id, GetProgramParameterName.LinkStatus, out success);
                     if (success != 0) return true;
-                    infoLog = GL.GetProgramInfoLog(id);
-                    Console.WriteLine($"Failed compiling shader {type}. Log: {Environment.NewLine + infoLog}");
                     return false;
                 default:
-                    Console.WriteLine($"{type} is unknown.");
+                    //Console.WriteLine($"{type} is unknown.");
                     return false;
             }
         }
@@ -114,12 +125,4 @@ namespace OpenTKSandbox
         ~ShaderProgram() => ReleaseUnmanagedResources();        
     }
 
-//    [Serializable]
-       //    public class ShaderProgramLinkingException : Exception
-       //    {
-       //        public ShaderProgramLinkingException() { }
-       //
-       //        public ShaderProgramLinkingException(string message)
-       //            : base("Failed linking shader program: " + message) { }
-       //    }
 }
