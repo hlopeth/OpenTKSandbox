@@ -10,6 +10,7 @@ namespace OpenTKSandbox
     {
         private readonly GameWindow _window;
         public bool windowSouldClose;
+        IScene scene;
 
         public Engine(GameWindow window)
         {
@@ -20,10 +21,11 @@ namespace OpenTKSandbox
             _window.UpdateFrame += WindowOnUpdateFrame;
             _window.RenderFrame += WindowOnRenderFrame;
             _window.KeyDown += WindowOnKeyDown;
+            scene = new Scene();
         }
 
         private ShaderProgram _shaderProgram;
-        private Model _cube;
+        private IModel _cube;
         
         private void WindowOnLoad(object sender, EventArgs e)
         {
@@ -31,7 +33,16 @@ namespace OpenTKSandbox
             try
             {
                 _shaderProgram = new ShaderProgram("object.vs", "object.fs");
-                _cube = new Model(_shaderProgram.Id, new[] { 1f, 2f, 3f }, 3);
+                Vertex[] vert =
+                {
+                    new Vertex(new OpenTK.Vector4(-0.5f,-0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Red),
+                    new Vertex(new OpenTK.Vector4( 0.5f,-0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Green),
+                    new Vertex(new OpenTK.Vector4( 0.5f, 0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Blue),
+                    new Vertex(new OpenTK.Vector4(-0.5f, 0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Pink)
+                };
+                uint[] ind = new uint[] { 0, 1, 2, 0, 2, 3};
+                _cube = new ModelV3(_shaderProgram, vert, ind);
+                scene.Models.Add(_cube);
             }
             catch (ShaderProgramException ex)
             {
@@ -61,9 +72,10 @@ namespace OpenTKSandbox
         private void WindowOnRenderFrame(object sender, FrameEventArgs e)
         {
             _window.Title = $"Sandbox FPS: {1f / e.Time:0}";
-            GL.ClearColor(Color.Gray);
+            GL.ClearColor(Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            
+
+            scene.Draw();
             _window.SwapBuffers();
         }
 
