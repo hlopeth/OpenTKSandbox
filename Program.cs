@@ -1,5 +1,4 @@
 ﻿using OpenTK;
-using OpenTK.Graphics;
 
 namespace OpenTKSandbox
 {
@@ -10,9 +9,8 @@ namespace OpenTKSandbox
         
         public static void Main(string[] args)
         {
-            var window = new GameWindow(Width, Height, GraphicsMode.Default, "Sandbox");
-            var engine = new Engine(window);
-            window.Run();
+            var engine = new Engine(Width, Height);
+            engine.Run();
         }
     }
 }

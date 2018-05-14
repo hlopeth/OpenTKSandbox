@@ -110,10 +110,16 @@ namespace OpenTKSandbox
             }
         }
 
+
+        bool disposed = false;
         private void ReleaseUnmanagedResources()
         {
-            if (Id != 0)
-                GL.DeleteProgram(Id);
+            if (!disposed)
+            {
+                if (Id != 0)
+                    GL.DeleteProgram(Id);
+                disposed = true;
+            }
         }
 
         public void Dispose()
@@ -122,7 +128,6 @@ namespace OpenTKSandbox
             GC.SuppressFinalize(this);
         }
 
-        ~ShaderProgram() => ReleaseUnmanagedResources();        
     }
 
 }

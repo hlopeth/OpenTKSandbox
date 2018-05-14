@@ -13,12 +13,12 @@ namespace OpenTKSandbox
         public ModelException(string message) : base(message) { }
     }
 
-    struct Vertex
+    struct Vertex2
     {
         OpenTK.Vector4 Position { get; set; }
         OpenTK.Graphics.Color4 Color { get; set; }
 
-        public Vertex(OpenTK.Vector4 position, OpenTK.Graphics.Color4 color)
+        public Vertex2(OpenTK.Vector4 position, OpenTK.Graphics.Color4 color)
         {
             this.Position = position;
             this.Color = color;
@@ -45,20 +45,23 @@ namespace OpenTKSandbox
         int VAO;
         int VBO;
         int IBO;
-        ModelState ModelState = ModelState.NoInitialized;
+        public Vertex2[] vertices;
+        public uint[] indices;
+        ShaderProgram shaderProgram;
+        private ModelState _modelState = ModelState.NoInitialized;
 
-        public ModelV3(ShaderProgram shaderProgram, Vertex[] vertices, uint[] indices)
-        {            
-            this.Vertices = vertices;
-            this.Indices = indices;
-            this.ShaderProgram = shaderProgram;
+        public ModelV3(ShaderProgram shaderProgram, Vertex2[] vertices, uint[] indices)
+        {
+            this.vertices = vertices;
+            this.indices = indices;
+            this.shaderProgram = shaderProgram;
 
             VAO = GL.GenVertexArray();
 
             VBO = GL.GenBuffer();
             GL.BindVertexArray(VAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertex.size * Vertices.Length, Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertex2.size * Vertices.Length, Vertices, BufferUsageHint.StaticDraw);
             //GL.NamedBufferStorage(VBO, Vertex.size * vertices.Length, vertices, BufferStorageFlags.MapWriteBit); the same
 
             IBO = GL.GenBuffer();
@@ -76,8 +79,8 @@ namespace OpenTKSandbox
             GL.EnableVertexArrayAttrib(VAO, 1);
             GL.VertexArrayAttribFormat(VAO, 1, 4, VertexAttribType.Float, false, 4 * sizeof(float));
 
-            GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex.size);
-            ModelState = ModelState.Initialized;
+            GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex2.size);
+            _modelState = ModelState.Initialized;
         }
 
         public void Update(Vertex[] vertices, uint[] indices)
@@ -87,28 +90,28 @@ namespace OpenTKSandbox
 
         public void Update()//not tested
         {
-            if (ModelState != ModelState.Initialized)
+            if (_modelState != ModelState.Initialized)
                 throw new ModelException("trying to update non initialized model");
             GL.BindVertexArray(VAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertex.size * Vertices.Length, Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertex2.size * Vertices.Length, Vertices, BufferUsageHint.StaticDraw);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(uint) * Indices.Length, Indices, BufferUsageHint.StaticDraw);
 
-            GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex.size);
+            GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex2.size);
+            //GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex.size);
         }
-
         public void Dispose()
         {
             GL.DeleteVertexArray(VAO);
             GL.DeleteBuffers(2, new[] { VBO, IBO });
-            ModelState = ModelState.Deleted;
+            _modelState = ModelState.Deleted;
         }
 
         public void Draw()
         {
-            if (ModelState != ModelState.Initialized)
+            if (_modelState != ModelState.Initialized)
                 throw new ModelException("trying to draw non initialized model");
             GL.BindVertexArray(VAO);
             GL.UseProgram(ShaderProgram.Id);
@@ -117,7 +120,7 @@ namespace OpenTKSandbox
 
         ~ModelV3()
         {
-            if(ModelState != ModelState.Deleted)
+            if(_modelState != ModelState.Deleted)
                 Dispose();
         }
     }
