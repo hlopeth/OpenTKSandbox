@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace OpenTKSandbox
 {
-    struct Vertex
+    struct Vertex2
     {
         OpenTK.Vector4 position { get; set; }
         OpenTK.Graphics.Color4 color { get; set; }
 
-        public Vertex(OpenTK.Vector4 position, OpenTK.Graphics.Color4 color)
+        public Vertex2(OpenTK.Vector4 position, OpenTK.Graphics.Color4 color)
         {
             this.position = position;
             this.color = color;
@@ -36,11 +36,11 @@ namespace OpenTKSandbox
         int VAO;
         int VBO;
         int IBO;
-        public Vertex[] vertices;
+        public Vertex2[] vertices;
         public uint[] indices;
         ShaderProgram shaderProgram;
 
-        public ModelV3(ShaderProgram shaderProgram, Vertex[] vertices, uint[] indices)
+        public ModelV3(ShaderProgram shaderProgram, Vertex2[] vertices, uint[] indices)
         {
             this.vertices = vertices;
             this.indices = indices;
@@ -51,7 +51,7 @@ namespace OpenTKSandbox
             VBO = GL.GenBuffer();
             GL.BindVertexArray(VAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.NamedBufferStorage(VBO, Vertex.size * vertices.Length, vertices, BufferStorageFlags.MapWriteBit);
+            //GL.NamedBufferStorage(VBO, Vertex.size * vertices.Length, vertices, BufferStorageFlags.MapWriteBit);
 
             IBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
@@ -67,8 +67,12 @@ namespace OpenTKSandbox
             GL.EnableVertexArrayAttrib(VAO, 1);
             GL.VertexArrayAttribFormat(VAO, 1, 4, VertexAttribType.Float, false, 4 * sizeof(float));
 
-            GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex.size);
+            //GL.VertexArrayVertexBuffer(VAO, 0, VBO, IntPtr.Zero, Vertex.size);
+        }
 
+        public ModelV3(ShaderProgram shaderProgram, Vertex[] vertices, uint[] indices)
+        {
+            
         }
 
         public void Dispose()

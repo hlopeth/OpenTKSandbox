@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace OpenTKSandbox
 {
     class Scene : IScene
     {
-        private List<IModel> models;
+        public List<IModel> Models { get; }
+        
         public Scene()
         {
-            models = new List<IModel>();
+            Models = new List<IModel>();
         }
 
-        public void AddModel(IModel model) => models.Add(model);
-        public void RemoveModel(IModel model) => models.Remove(model);
-        
-        
         public void Draw()
         {
-            foreach (var model in models)
+            foreach (var model in Models)
                 model.Draw();
         }
 
-        public List<IModel> Models
+        public void Delete()
         {
-            get { return models; }
+            foreach (var model in Models)
+            {
+                model.Dispose();
+            }
         }
     }
 }

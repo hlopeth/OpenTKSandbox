@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenTKSandbox
+﻿namespace OpenTKSandbox
 {
     interface IModel
     {
         void Draw();
+        
         void Dispose();
     }
 }
