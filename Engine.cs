@@ -35,9 +35,18 @@ namespace OpenTKSandbox
 
         protected override void OnUnload(EventArgs e)
         {
-            var model = (Model)_mainScene.Models[0];
-            model.ShaderProgram.Dispose();
-            _mainScene.Models[0].Dispose();
+            Scene scene = (Scene)_mainScene;
+            foreach(var curModel in scene.Models)
+            {
+                var model = (Model)curModel;
+                model.ShaderProgram.Dispose();
+                model.Dispose();
+            }
+            //var model = (Model)_mainScene.Models[0];
+            //model.ReleaseUnmanagedResources();
+            //model.ReleaseUnmanagedResources();
+            //model.ShaderProgram.Dispose();
+            //_mainScene.Models[0].Dispose();
         }
 
         protected override void OnResize(EventArgs e)

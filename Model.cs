@@ -104,14 +104,19 @@ namespace OpenTKSandbox
                 GL.DrawElements(BeginMode.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
         }
 
-        private void ReleaseUnmanagedResources()
+        bool disposed = false;
+        public void ReleaseUnmanagedResources()
         {
-            if (VAO != 0)
-                GL.DeleteVertexArray(VAO);
-            if (VBO != 0)
-                GL.DeleteBuffer(VBO);
-            if (EBO != 0)
-                GL.DeleteBuffer(EBO);
+            if (!disposed)
+            {
+                if (VAO != 0)
+                    GL.DeleteVertexArray(VAO);
+                if (VBO != 0)
+                    GL.DeleteBuffer(VBO);
+                if (EBO != 0)
+                    GL.DeleteBuffer(EBO);
+                disposed = true;
+            }
         }
 
         public void Dispose()
@@ -120,6 +125,5 @@ namespace OpenTKSandbox
             GC.SuppressFinalize(this);
         }
 
-        ~Model() => ReleaseUnmanagedResources();
     }
 }
