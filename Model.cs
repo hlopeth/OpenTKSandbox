@@ -12,12 +12,12 @@ namespace OpenTKSandbox
         public int EBO { get; private set; }
         private int indicesLength = 0;
 
-        public ShaderProgram shaderProgram { get; }
+        public ShaderProgram ShaderProgram { get; }
         public List<int> TextureIds { get; private set; }
 
         public Model(ShaderProgram shaderProgram, float[] vertices, params int[] structure)
         {
-            this.shaderProgram = shaderProgram;
+            this.ShaderProgram = shaderProgram;
             
             GenerateVAO();
 
@@ -30,7 +30,7 @@ namespace OpenTKSandbox
 
         public Model(ShaderProgram shaderProgram, float[] vertices, uint[] indices, params int[] structure)
         {
-            this.shaderProgram = shaderProgram;
+            this.ShaderProgram = shaderProgram;
 
             GenerateVAO();
 
@@ -56,7 +56,7 @@ namespace OpenTKSandbox
         {
             GL.BindVertexArray(VAO);
 
-            GL.UseProgram(shaderProgram.Id);
+            GL.UseProgram(ShaderProgram.Id);
 
             if (TextureIds == null) return;
             foreach (var textureId in TextureIds)

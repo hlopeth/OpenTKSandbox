@@ -27,9 +27,10 @@ namespace OpenTKSandbox
         private ShaderProgram _shaderProgram;
         private IModel _cube;
         
+        
         private void WindowOnLoad(object sender, EventArgs e)
         {
-            //GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.DepthTest);
             try
             {
                 _shaderProgram = new ShaderProgram("object.vs", "object.fs");
@@ -45,6 +46,10 @@ namespace OpenTKSandbox
                 scene.Models.Add(_cube);
             }
             catch (ShaderProgramException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ModelException ex)
             {
                 Console.WriteLine(ex.Message);
             }

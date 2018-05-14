@@ -27,7 +27,7 @@ namespace OpenTKSandbox
             GL.AttachShader(Id, vertexId);
             GL.AttachShader(Id, fragmentId);
             GL.LinkProgram(Id);
-            if (!CompilationSuccess(Id, Type.Program))
+            if (!isCompilationSuccess(Id, Type.Program))
             {
                 var infoLog = GL.GetProgramInfoLog(Id);
                 throw new ShaderProgramException($"Failed linking shaders {Type.Program}. Log: {Environment.NewLine + infoLog}");
@@ -80,7 +80,7 @@ namespace OpenTKSandbox
             GL.ShaderSource(shaderId, shaderCode);
             GL.CompileShader(shaderId);
             var type = shaderType == ShaderType.VertexShader ? Type.Vertex : Type.Fragment;
-            if (CompilationSuccess(shaderId, type))
+            if (isCompilationSuccess(shaderId, type))
                 return shaderId;
             else
             {
@@ -89,7 +89,7 @@ namespace OpenTKSandbox
             }
         }
 
-        private static bool CompilationSuccess(int id, Type type)
+        private static bool isCompilationSuccess(int id, Type type)
         {
             int success;
 
