@@ -15,37 +15,6 @@ namespace OpenTKSandbox
             GL.Enable(EnableCap.DepthTest);   
         }
 
-<<<<<<< HEAD
-        private ShaderProgram _shaderProgram;
-        private IModel _cube;
-        
-        
-        private void WindowOnLoad(object sender, EventArgs e)
-        {
-            GL.Enable(EnableCap.DepthTest);
-            try
-            {
-                _shaderProgram = new ShaderProgram("object.vs", "object.fs");
-                Vertex[] vert =
-                {
-                    new Vertex(new OpenTK.Vector4(-0.5f,-0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Red),
-                    new Vertex(new OpenTK.Vector4( 0.5f,-0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Green),
-                    new Vertex(new OpenTK.Vector4( 0.5f, 0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Blue),
-                    new Vertex(new OpenTK.Vector4(-0.5f, 0.5f, 0.5f, 1f), OpenTK.Graphics.Color4.Pink)
-                };
-                uint[] ind = new uint[] { 0, 1, 2, 0, 2, 3};
-                _cube = new ModelV3(_shaderProgram, vert, ind);
-                scene.Models.Add(_cube);
-            }
-            catch (ShaderProgramException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (ModelException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-=======
         protected override void OnLoad(EventArgs e)
         {
             _mainScene = new Scene();
@@ -62,7 +31,6 @@ namespace OpenTKSandbox
             var model = new Model(shaderProgram, vertexData);
             
             _mainScene.Models.Add(model);
->>>>>>> dispose
         }
 
         protected override void OnUnload(EventArgs e)
@@ -74,11 +42,6 @@ namespace OpenTKSandbox
                 model.ShaderProgram.Dispose();
                 model.Dispose();
             }
-            //var model = (Model)_mainScene.Models[0];
-            //model.ReleaseUnmanagedResources();
-            //model.ReleaseUnmanagedResources();
-            //model.ShaderProgram.Dispose();
-            //_mainScene.Models[0].Dispose();
         }
 
         protected override void OnResize(EventArgs e)

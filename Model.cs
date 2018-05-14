@@ -11,24 +11,17 @@ namespace OpenTKSandbox
         public int VBO { get; private set; }
         public int EBO { get; private set; }
 
-<<<<<<< HEAD
-=======
         public IVertexData VertexData { get; }
         public uint[] Indices { get; }
 
->>>>>>> dispose
         public ShaderProgram ShaderProgram { get; }
         public List<int> TextureIds { get; private set; }
 
         public Model(ShaderProgram shaderProgram, IVertexData vertexData)
         {
-<<<<<<< HEAD
             this.ShaderProgram = shaderProgram;
             
-=======
-            ShaderProgram = shaderProgram;
             VertexData = vertexData;
->>>>>>> dispose
             GenerateVAO();
             GenerateVBO();
             LinkVertexAttributes(VertexData.Structure);
@@ -37,13 +30,8 @@ namespace OpenTKSandbox
 
         public Model(ShaderProgram shaderProgram, Vertex[] vertices, uint[] indices)
         {
-<<<<<<< HEAD
-            this.ShaderProgram = shaderProgram;
-
-=======
             ShaderProgram = shaderProgram;
             VertexData = new VertexData(vertices);
->>>>>>> dispose
             GenerateVAO();
             GenerateVBO();
             LinkVertexAttributes(VertexData.Structure);
